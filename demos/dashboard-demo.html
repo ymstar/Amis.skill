@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amis Dashboard Demo - 数据仪表盘</title>
+  <!-- 引入 Amis 样式 -->
+  <link href="https://cdn.jsdelivr.net/npm/amis@6.13.0/lib/themes/cxd.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/amis@6.13.0/lib/helper.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; background: #f5f6fa; }
+    .stat-card { text-align: center; padding: 20px; }
+    .stat-value { font-size: 32px; font-weight: bold; color: #3f8cff; }
+    .stat-label { font-size: 14px; color: #666; margin-top: 8px; }
+    .stat-trend { font-size: 12px; margin-top: 4px; }
+    .trend-up { color: #52c41a; }
+    .trend-down { color: #ff4d4f; }
+    .chart-container { height: 300px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <!-- 引入 Amis SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/amis@6.13.0/lib/sdk.js"></script>
+  <script>
+    // ============================================
+    // Mock 数据
+    // ============================================
+    
+    // 统计数据
+    const statsData = {
+      totalUsers: 12580,
+      activeUsers: 8960,
+      totalOrders: 35842,
+      totalSales: 2856800,
+      newOrders: 128,
+      todayVisits: 5623
+    };
+
+    // 销售趋势数据（月度）
+    const salesTrendData = {
+      categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      sales: [120, 95, 160, 180, 210, 195, 220, 250, 280, 310, 350, 380],
+      orders: [450, 380, 520, 580, 650, 620, 700, 780, 850, 920, 1050, 1150]
+    };
+
+    // 订单状态分布
+    const orderStatusData = [
+      { name: '已完成', value: 28500 },
+      { name: '进行中', value: 4200 },
+      { name: '已取消', value: 2100 },
+      { name: '待支付', value: 1042 }
+    ];
+
+    // 用户活跃时段
+    const userActiveData = {
+      categories: ['0时', '2时', '4时', '6时', '8时', '10时', '12时', '14时', '16时', '18时', '20时', '22时'],
+      data: [120, 80, 60, 200, 800, 1200, 1500, 1800, 1600, 1400, 1100, 600]
+    };
+
+    // 最近订单
+    const recentOrders = [
+      { orderNo: 'ORD20240115001', user: '张三', amount: 299.00, status: 'completed', createTime: '2024-01-15 10:30' },
+      { orderNo: 'ORD20240115002', user: '李四', amount: 1580.00, status: 'processing', createTime: '2024-01-15 10:45' },
+      { orderNo: 'ORD20240115003', user: '王五', amount: 89.00, status: 'pending', createTime: '2024-01-15 11:00' },
+      { orderNo: 'ORD20240115004', user: '赵六', amount: 2999.00, status: 'completed', createTime: '2024-01-15 11:15' },
+      { orderNo: 'ORD20240115005', user: '钱七', amount: 456.00, status: 'completed', createTime: '2024-01-15 11:30' }
+    ];
+
+    // ============================================
+    // Amis Schema 配置
+    // ============================================
+    const schema = {
+      type: 'page',
+      title: '数据仪表盘',
+      subTitle: '实时业务数据概览',
+      // 页面样式
+      css: {
+        '.stat-card': {
+          'text-align': 'center',
+          'padding': '20px',
+          'background': '#fff',
+          'border-radius': '8px',
+          'box-shadow': '0 2px 8px rgba(0,0,0,0.08)'
+        }
+      },
+      // 顶部工具栏
+      toolbar: [
+        {
+          type: 'button',
+          label: '刷新数据',
+          icon: 'fa fa-refresh',
+          actionType: 'reload',
+          level: 'default'
+        },
+        {
+          type: 'date',
+          name: 'dateRange',
+          label: '日期范围',
+          format: 'YYYY-MM-DD',
+          value: 'today',
+          clearable: false
+        }
+      ],
+      body: [
+        // ==================== 第一行：统计卡片 ====================
+        {
+          type: 'flex',
+          className: 'm-b-lg',
+          justify: 'space-around',
+          items: [
+            // 卡片1：总用户数
+            {
+              type: 'card',
+              className: 'm-r-sm',
+              style: { flex: 1 },
+              header: {
+                title: '总用户数',
+                className: 'bg-primary text-white'
+              },
+              body: '$${totalUsers|number}',
+              bodyClassName: 'p-20 text-center',
+              bodyRenderer: function(h, entry) {
+                const value = (window.statsData && window.statsData.totalUsers) || 0;
+                return h('div', {}, [
+                  h('div', { style: { fontSize: '36px', fontWeight: 'bold', color: '#1890ff' } }, value.toLocaleString()),
+                  h('div', { style: { fontSize: '12px', color: '#666', marginTop: '8px' } }, [
+                    h('span', { className: 'trend-up' }, '↑ 12.5%'),
+                    ' 较上月'
+                  ])
+                ]);
+              }
+            },
+            // 卡片2：活跃用户
+            {
+              type: 'card',
+              className: 'm-r-sm',
+              style: { flex: 1 },
+              header: {
+                title: '活跃用户',
+                className: 'bg-success text-white'
+              },
+              bodyClassName: 'p-20 text-center',
+              bodyRenderer: function(h, entry) {
+                const value = (window.statsData && window.statsData.activeUsers) || 0;
+                const percent = ((value / (window.statsData?.totalUsers || 1)) * 100).toFixed(1);
+                return h('div', {}, [
+                  h('div', { style: { fontSize: '36px', fontWeight: 'bold', color: '#52c41a' } }, value.toLocaleString()),
+                  h('div', { style: { fontSize: '12px', color: '#666', marginTop: '8px' } }, [
+                    h('span', { className: 'trend-up' }, '↑ 8.3%'),
+                    ' 活跃率 ' + percent + '%'
+                  ])
+                ]);
+              }
+            },
+            // 卡片3：总订单数
+            {
+              type: 'card',
+              className: 'm-r-sm',
+              style: { flex: 1 },
+              header: {
+                title: '总订单数',
+                className: 'bg-warning text-white'
+              },
+              bodyClassName: 'p-20 text-center',
+              bodyRenderer: function(h, entry) {
+                const value = (window.statsData && window.statsData.totalOrders) || 0;
+                return h('div', {}, [
+                  h('div', { style: { fontSize: '36px', fontWeight: 'bold', color: '#faad14' } }, value.toLocaleString()),
+                  h('div', { style: { fontSize: '12px', color: '#666', marginTop: '8px' } }, [
+                    h('span', { className: 'trend-up' }, '↑ 15.2%'),
+                    ' 较上月'
+                  ])
+                ]);
+              }
+            },
+            // 卡片4：总销售额
+            {
+              type: 'card',
+              style: { flex: 1 },
+              header: {
+                title: '总销售额',
+                className: 'bg-danger text-white'
+              },
+              bodyClassName: 'p-20 text-center',
+              bodyRenderer: function(h, entry) {
+                const value = (window.statsData && window.statsData.totalSales) || 0;
+                return h('div', {}, [
+                  h('div', { style: { fontSize: '36px', fontWeight: 'bold', color: '#ff4d4f' } }, '¥' + value.toLocaleString()),
+                  h('div', { style: { fontSize: '12px', color: '#666', marginTop: '8px' } }, [
+                    h('span', { className: 'trend-up' }, '↑ 22.8%'),
+                    ' 较上月'
+                  ])
+                ]);
+              }
+            }
+          ]
+        },
+
+        // ==================== 第二行：图表 ====================
+        {
+          type: 'grid',
+          className: 'm-b-lg',
+          columns: [
+            // 左侧：销售趋势图
+            {
+              md: 8,
+              body: {
+                type: 'panel',
+                title: '月度销售趋势',
+                body: {
+                  type: 'chart',
+                  // 使用 ECharts 配置
+                  config: {
+                    tooltip: {
+                      trigger: 'axis',
+                      axisPointer: { type: 'cross' }
+                    },
+                    legend: {
+                      data: ['销售额(万元)', '订单数'],
+                      bottom: 0
+                    },
+                    grid: {
+                      left: '3%',
+                      right: '4%',
+                      bottom: '15%',
+                      top: '10%',
+                      containLabel: true
+                    },
+                    xAxis: {
+                      type: 'category',
+                      boundaryGap: false,
+                      data: salesTrendData.categories
+                    },
+                    yAxis: [
+                      {
+                        type: 'value',
+                        name: '销售额',
+                        axisLabel: { formatter: '{value} 万' }
+                      },
+                      {
+                        type: 'value',
+                        name: '订单数',
+                        axisLabel: { formatter: '{value}' }
+                      }
+                    ],
+                    series: [
+                      {
+                        name: '销售额(万元)',
+                        type: 'line',
+                        smooth: true,
+                        data: salesTrendData.sales,
+                        itemStyle: { color: '#1890ff' },
+                        areaStyle: {
+                          color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [
+                              { offset: 0, color: 'rgba(24,144,255,0.3)' },
+                              { offset: 1, color: 'rgba(24,144,255,0.05)' }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        name: '订单数',
+                        type: 'line',
+                        smooth: true,
+                        yAxisIndex: 1,
+                        data: salesTrendData.orders,
+                        itemStyle: { color: '#52c41a' }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            // 右侧：订单状态分布
+            {
+              md: 4,
+              body: {
+                type: 'panel',
+                title: '订单状态分布',
+                body: {
+                  type: 'chart',
+                  config: {
+                    tooltip: {
+                      trigger: 'item',
+                      formatter: '{b}: {c} ({d}%)'
+                    },
+                    legend: {
+                      orient: 'vertical',
+                      right: '5%',
+                      top: 'center'
+                    },
+                    series: [
+                      {
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        center: ['35%', '50%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                          borderRadius: 6,
+                          borderColor: '#fff',
+                          borderWidth: 2
+                        },
+                        label: {
+                          show: false
+                        },
+                        emphasis: {
+                          label: {
+                            show: true,
+                            fontSize: 14,
+                            fontWeight: 'bold'
+                          }
+                        },
+                        data: orderStatusData.map((item, idx) => ({
+                          value: item.value,
+                          name: item.name,
+                          itemStyle: {
+                            color: ['#52c41a', '#1890ff', '#ff4d4f', '#faad14'][idx]
+                          }
+                        }))
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+
+        // ==================== 第三行：活跃时段 + 最近订单 ====================
+        {
+          type: 'grid',
+          columns: [
+            // 左侧：用户活跃时段
+            {
+              md: 6,
+              body: {
+                type: 'panel',
+                title: '用户活跃时段分析',
+                body: {
+                  type: 'chart',
+                  config: {
+                    tooltip: {
+                      trigger: 'axis',
+                      axisPointer: { type: 'shadow' }
+                    },
+                    grid: {
+                      left: '3%',
+                      right: '4%',
+                      bottom: '3%',
+                      top: '5%',
+                      containLabel: true
+                    },
+                    xAxis: {
+                      type: 'category',
+                      data: userActiveData.categories
+                    },
+                    yAxis: {
+                      type: 'value',
+                      name: '访问量'
+                    },
+                    series: [
+                      {
+                        type: 'bar',
+                        data: userActiveData.data,
+                        itemStyle: {
+                          color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [
+                              { offset: 0, color: '#1890ff' },
+                              { offset: 1, color: '#69c0ff' }
+                            ]
+                          },
+                          borderRadius: [4, 4, 0, 0]
+                        },
+                        barWidth: '60%'
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            // 右侧：最近订单
+            {
+              md: 6,
+              body: {
+                type: 'panel',
+                title: '最近订单',
+                body: {
+                  type: 'crud',
+                  api: '/api/recent-orders',
+                  // 静态数据演示
+                  data: {
+                    items: recentOrders
+                  },
+                  // 禁用分页和操作
+                  pageable: false,
+                  headerToolbar: [],
+                  footerToolbar: [],
+                  // 表格列
+                  columns: [
+                    {
+                      name: 'orderNo',
+                      label: '订单号',
+                      width: 150
+                    },
+                    {
+                      name: 'user',
+                      label: '用户',
+                      width: 80
+                    },
+                    {
+                      name: 'amount',
+                      label: '金额',
+                      width: 100,
+                      type: 'tpl',
+                      tpl: '¥${amount|number}'
+                    },
+                    {
+                      name: 'status',
+                      label: '状态',
+                      width: 80,
+                      type: 'mapping',
+                      map: {
+                        'completed': '<span class="text-success">已完成</span>',
+                        'processing': '<span class="text-info">进行中</span>',
+                        'pending': '<span class="text-warning">待支付</span>',
+                        'cancelled': '<span class="text-muted">已取消</span>'
+                      }
+                    },
+                    {
+                      name: 'createTime',
+                      label: '时间',
+                      width: 140
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+
+        // ==================== 第四行：快捷入口 ====================
+        {
+          type: 'panel',
+          title: '快捷操作',
+          body: {
+            type: 'flex',
+            justify: 'space-around',
+            items: [
+              {
+                type: 'button',
+                label: '新增订单',
+                icon: 'fa fa-plus',
+                level: 'primary',
+                actionType: 'dialog',
+                dialog: {
+                  title: '新增订单',
+                  body: {
+                    type: 'form',
+                    api: 'post:/api/orders',
+                    body: [
+                      { type: 'input-text', name: 'orderNo', label: '订单号', required: true },
+                      { type: 'input-text', name: 'user', label: '客户名称', required: true },
+                      { type: 'input-number', name: 'amount', label: '订单金额', required: true },
+                      { type: 'select', name: 'status', label: '订单状态', options: [
+                        { label: '待支付', value: 'pending' },
+                        { label: '进行中', value: 'processing' },
+                        { label: '已完成', value: 'completed' }
+                      ]},
+                      { type: 'textarea', name: 'remark', label: '备注' }
+                    ],
+                    buttons: [
+                      { type: 'cancel', label: '取消' },
+                      { type: 'submit', label: '提交', level: 'primary' }
+                    ]
+                  }
+                }
+              },
+              {
+                type: 'button',
+                label: '用户分析',
+                icon: 'fa fa-users',
+                level: 'success',
+                actionType: 'link',
+                link: '/analytics/users'
+              },
+              {
+                type: 'button',
+                label: '销售报表',
+                icon: 'fa fa-chart-bar',
+                level: 'warning',
+                actionType: 'link',
+                link: '/reports/sales'
+              },
+              {
+                type: 'button',
+                label: '导出数据',
+                icon: 'fa fa-download',
+                level: 'default',
+                actionType: 'ajax',
+                api: 'post:/api/export',
+                confirmText: '确定导出当前数据报表？'
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    // 将统计数据挂载到 window 供 bodyRenderer 使用
+    window.statsData = statsData;
+
+    // 渲染页面
+    amisRequire('amis/embed').embed('#root', schema, {
+      data: {
+        totalUsers: statsData.totalUsers,
+        activeUsers: statsData.activeUsers,
+        totalOrders: statsData.totalOrders,
+        totalSales: statsData.totalSales
+      }
+    });
+  </script>
+</body>
+</html>
