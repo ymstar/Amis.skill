@@ -76,23 +76,24 @@
           url: '/api/users',
           // 模拟数据返回格式
           data: {
-            &page: '${page}',
-            &perPage: '${perPage}',
-            &keywords: '${keywords}',
-            &department: '${department}',
-            &status: '${status}'
+            page: '${page}',
+            perPage: '${perPage}',
+            keywords: '${keywords}',
+            department: '${department}',
+            status: '${status}'
           },
           // 使用 Adaptor 模拟 API 响应
           adaptor: function(payload, response, api) {
-            const page = parseInt(api.query.page) || 1;
-            const perPage = parseInt(api.query.perPage) || 10;
+            const reqData = api.data || {};
+            const page = parseInt(reqData.page) || 1;
+            const perPage = parseInt(reqData.perPage) || 10;
             
             // 模拟筛选
             let filtered = [...mockUsers];
             
             // 关键字搜索
-            if (api.query.keywords) {
-              const kw = api.query.keywords.toLowerCase();
+            if (reqData.keywords) {
+              const kw = reqData.keywords.toLowerCase();
               filtered = filtered.filter(u => 
                 u.name.toLowerCase().includes(kw) || 
                 u.email.toLowerCase().includes(kw)
@@ -100,13 +101,13 @@
             }
             
             // 部门筛选
-            if (api.query.department) {
-              filtered = filtered.filter(u => u.department === api.query.department);
+            if (reqData.department) {
+              filtered = filtered.filter(u => u.department === reqData.department);
             }
             
             // 状态筛选
-            if (api.query.status) {
-              filtered = filtered.filter(u => u.status === api.query.status);
+            if (reqData.status) {
+              filtered = filtered.filter(u => u.status === reqData.status);
             }
             
             // 分页
@@ -514,7 +515,7 @@
     };
 
     // 渲染页面
-    amisRequire('amis/embed').embed('#root', schema, {
+    amis.embed('#root', schema, {
       // 上下文数据
       data: {
         userName: 'Admin'

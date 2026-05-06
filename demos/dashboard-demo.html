@@ -517,7 +517,7 @@
     window.statsData = statsData;
 
     // 渲染页面
-    amisRequire('amis/embed').embed('#root', schema, {
+    amis.embed('#root', schema, {
       data: {
         totalUsers: statsData.totalUsers,
         activeUsers: statsData.activeUsers,
