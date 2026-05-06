@@ -1,7 +1,3 @@
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Amis](https://img.shields.io/badge/Amis-6.13.0-brightgreen.svg)
-![Demo](https://img.shields.io/badge/Demo-3个可运行示例-orange.svg)
-
 <div align="center">
 
 # 🏗️ Amis.skill
@@ -9,6 +5,10 @@
 **百度Amis低代码框架的Agent技能包 — JSON驱动页面生成**
 
 覆盖100+组件 · 3个可运行Demo · 完整组件指南 · API对接方案
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Amis](https://img.shields.io/badge/Amis-6.13.0-brightgreen.svg)
+![Demo](https://img.shields.io/badge/Demo-3个可运行示例-orange.svg)
 
 </div>
 
