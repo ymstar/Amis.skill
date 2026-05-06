@@ -9,8 +9,35 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Amis](https://img.shields.io/badge/Amis-6.13.0-brightgreen.svg)
 ![Demo](https://img.shields.io/badge/Demo-3个可运行示例-orange.svg)
+[![npx compatible](https://img.shields.io/badge/npx-skills--compatible-green)](https://skills.sh/)
 
 </div>
+
+---
+
+## 🚀 快速安装
+
+### 方式一：通过 npx skills 安装（推荐）
+
+```bash
+# 查看可用技能
+npx skills add ymstar/Amis.skill --list
+
+# 安装 Amis 低代码技能
+npx skills add ymstar/Amis.skill -s amis-low-code
+
+# 全局安装到所有支持的Agent
+npx skills add ymstar/Amis.skill -s amis-low-code -g -y
+```
+
+支持的Agent：Claude Code、Cursor、Windsurf、Codex、OpenCode 等
+
+### 方式二：手动安装
+
+```bash
+# 克隆到本地技能目录
+git clone https://github.com/ymstar/Amis.skill.git ~/.claude/skills/amis-low-code
+```
 
 ---
 
@@ -26,6 +53,7 @@
 - 📚 **完整指南** — 表格/表单/图表/联动/主题五大专题
 - 🔧 **Schema验证** — Python脚本自动检查JSON配置
 - 🔗 **API对接** — 后端数据交互完整方案
+- ⚡ **npx兼容** — 一条命令安装到所有AI编程助手
 
 ---
 
@@ -46,90 +74,53 @@
 
 | Demo | 说明 | 运行方式 |
 |------|------|----------|
-| 📋 CRUD管理页面 | 用户增删改查 + 搜索分页 + 批量操作 | 双击 `demos/crud-demo.html` |
-| 📊 数据仪表盘 | 统计卡片 + ECharts图表 + 数据表格联动 | 双击 `demos/dashboard-demo.html` |
-| 📝 复杂表单 | 验证 + 级联选择 + 文件上传 | 双击 `demos/form-demo.html` |
+| 📋 CRUD管理页面 | 用户增删改查 + 搜索分页 + 批量操作 | 双击 `skills/amis-low-code/demos/crud-demo.html` |
+| 📊 数据仪表盘 | 统计卡片 + ECharts图表 + 数据表格联动 | 双击 `skills/amis-low-code/demos/dashboard-demo.html` |
+| 📝 复杂表单 | 级联选择 + 文件上传 + 表单验证 + 富文本 | 双击 `skills/amis-low-code/demos/form-demo.html` |
 
 ---
 
-## 🚀 快速开始
+## 📁 目录结构
 
-### 方式一：运行Demo
-```bash
-# 克隆项目
-git clone https://github.com/ymstar/Amis.skill.git
-cd Amis.skill
-
-# 双击打开Demo（无需后端，内置Mock数据）
-open demos/crud-demo.html
-open demos/dashboard-demo.html
-open demos/form-demo.html
 ```
-
-### 方式二：在Agent中使用
-将skill.md和references目录加载到Agent的工作目录，Agent即可根据JSON Schema生成Amis页面。
-
-### 方式三：Schema验证
-```bash
-# 验证你的Amis JSON配置
-python3 scripts/amis-validator.py your-schema.json
+Amis.skill/
+└── skills/
+    └── amis-low-code/              # Amis低代码技能
+        ├── SKILL.md                # 技能说明（npx识别必备）
+        ├── demos/                  # 可运行示例
+        │   ├── crud-demo.html
+        │   ├── dashboard-demo.html
+        │   └── form-demo.html
+        └── references/             # 参考文档
+            ├── amis-quickstart.md
+            ├── component-guide.md
+            ├── schema-reference.md
+            ├── api-integration.md
+            └── field-linkage-guide.md
 ```
 
 ---
 
-## 📂 文档目录
+## 💡 使用方法
 
-| 文件 | 说明 |
-|------|------|
-| `skill.md` | 技能主文档（总览） |
-| `demos/crud-demo.html` | CRUD管理页面Demo |
-| `demos/dashboard-demo.html` | 数据仪表盘Demo |
-| `demos/form-demo.html` | 复杂表单Demo |
-| `references/table-guide.md` | 表格/CRUD完整指南 |
-| `references/form-guide.md` | 表单完整指南 |
-| `references/chart-guide.md` | 图表完整指南 |
-| `references/linkage-guide.md` | 字段联动与条件渲染指南 |
-| `references/theme-guide.md` | 主题定制完整指南 |
-| `references/components.md` | 组件参考手册 |
-| `references/page-templates.md` | 页面模板集合 |
-| `references/api-integration.md` | API对接指南 |
-| `references/styling-guide.md` | 样式定制指南 |
-| `scripts/amis-validator.py` | Schema验证脚本 |
+安装后，Agent会自动加载此技能。你可以这样使用：
+
+> "用Amis生成一个订单管理后台，包含搜索、表格、新增编辑"
+>
+> "做一个数据仪表盘，显示销售额趋势和用户分布饼图"
+>
+> "生成一个企业注册表单，包含省市区级联选择和附件上传"
 
 ---
 
-## 🧩 版本历史
+## 🔗 相关链接
 
-### v1.1 (2026-05-06)
-- ✨ 新增3个可直接运行的HTML Demo
-- ✨ 新增表格/表单/图表三大组件完整指南
-- ✨ 新增字段联动与条件渲染指南
-- ✨ 新增主题定制完整指南
-
-### v1.0 (2026-04-30)
-- 🎉 初始版本发布
-- 100+组件参考手册
-- 6个页面模板
-- API对接指南
-- Schema验证脚本
-
----
-
-## 🌐 虾评Skill
-
-本技能已发布在虾评Skill平台：
-👉 [Amis低代码页面生成 - 虾评Skill](https://xiaping.coze.site/skill/fcdc726b-e5e4-4cc2-814f-f5c5cc7e16e0)
+- **Amis官方文档**：https://aisuda.bce.baidu.com/amis/zh-CN/docs/index
+- **Skills CLI**：https://github.com/vercel-labs/skills
+- **技能市场**：https://skills.sh/
 
 ---
 
 ## 📄 License
 
-MIT License - 详见 [LICENSE](LICENSE)
-
----
-
-<div align="center">
-
-**JSON驱动，零代码生成页面** ✨
-
-</div>
+MIT License
