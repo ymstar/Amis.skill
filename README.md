@@ -20,23 +20,23 @@
 ### 方式一：通过 npx skills 安装（推荐）
 
 ```bash
-# 查看可用技能
+# 查看技能详情
 npx skills add ymstar/Amis.skill --list
 
-# 安装 Amis 低代码技能
-npx skills add ymstar/Amis.skill -s amis-low-code
+# 安装到当前项目
+npx skills add ymstar/Amis.skill
 
-# 全局安装到所有支持的Agent
-npx skills add ymstar/Amis.skill -s amis-low-code -g -y
+# 全局安装（所有AI助手共用）
+npx skills add ymstar/Amis.skill -g -y
 ```
 
-支持的Agent：Claude Code、Cursor、Windsurf、Codex、OpenCode 等
+✅ 支持：**Claude Code、Cursor、Windsurf、Codex、OpenCode** 等
 
 ### 方式二：手动安装
 
 ```bash
-# 克隆到本地技能目录
-git clone https://github.com/ymstar/Amis.skill.git ~/.claude/skills/amis-low-code
+# 克隆到 Claude Code 技能目录
+git clone https://github.com/ymstar/Amis.skill.git ~/.claude/skills/amis-skill
 ```
 
 ---
@@ -74,9 +74,9 @@ git clone https://github.com/ymstar/Amis.skill.git ~/.claude/skills/amis-low-cod
 
 | Demo | 说明 | 运行方式 |
 |------|------|----------|
-| 📋 CRUD管理页面 | 用户增删改查 + 搜索分页 + 批量操作 | 双击 `skills/amis-low-code/demos/crud-demo.html` |
-| 📊 数据仪表盘 | 统计卡片 + ECharts图表 + 数据表格联动 | 双击 `skills/amis-low-code/demos/dashboard-demo.html` |
-| 📝 复杂表单 | 级联选择 + 文件上传 + 表单验证 + 富文本 | 双击 `skills/amis-low-code/demos/form-demo.html` |
+| 📋 CRUD管理页面 | 用户增删改查 + 搜索分页 + 批量操作 | 双击 `demos/crud-demo.html` |
+| 📊 数据仪表盘 | 统计卡片 + ECharts图表 + 数据表格联动 | 双击 `demos/dashboard-demo.html` |
+| 📝 复杂表单 | 级联选择 + 文件上传 + 表单验证 + 富文本 | 双击 `demos/form-demo.html` |
 
 ---
 
@@ -84,19 +84,19 @@ git clone https://github.com/ymstar/Amis.skill.git ~/.claude/skills/amis-low-cod
 
 ```
 Amis.skill/
-└── skills/
-    └── amis-low-code/              # Amis低代码技能
-        ├── SKILL.md                # 技能说明（npx识别必备）
-        ├── demos/                  # 可运行示例
-        │   ├── crud-demo.html
-        │   ├── dashboard-demo.html
-        │   └── form-demo.html
-        └── references/             # 参考文档
-            ├── amis-quickstart.md
-            ├── component-guide.md
-            ├── schema-reference.md
-            ├── api-integration.md
-            └── field-linkage-guide.md
+├── SKILL.md                    # 技能说明（npx识别必备）
+├── demos/                      # 可运行示例
+│   ├── crud-demo.html
+│   ├── dashboard-demo.html
+│   └── form-demo.html
+├── references/                 # 参考文档
+│   ├── amis-quickstart.md
+│   ├── component-guide.md
+│   ├── schema-reference.md
+│   └── api-integration.md
+├── scripts/                    # 工具脚本
+│   └── validate_schema.py
+└── README.md                   # 本文件
 ```
 
 ---
