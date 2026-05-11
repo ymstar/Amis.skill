@@ -173,6 +173,49 @@ amis-low-code/
 - **API 对接** - 对接真实后端接口
 - **自定义组件** - 扩展 Amis 组件库
 
+## Context7 实时文档集成
+
+本 Skill 集成了 [Context7](https://context7.com/) MCP 服务，支持在生成 amis 页面时实时拉取最新官方文档，避免因版本迭代导致 API 过时。
+
+### 工作原理
+
+Context7 通过 MCP（Model Context Protocol）协议提供两个核心工具：
+
+1. **resolve-library-id**：根据库名解析出 Context7 兼容的库 ID
+2. **get-library-docs**：根据库 ID 和主题拉取最新文档片段
+
+### 调用流程
+
+```
+用户请求 amis 页面
+  → resolve-library-id(libraryName="amis")
+  → 获取 context7CompatibleLibraryID
+  → get-library-docs(context7CompatibleLibraryID, topic="用户关注的主题", tokens=8000)
+  → 结合返回的文档生成 Schema
+```
+
+### 必须使用 Context7 的场景
+
+- 用户要求使用 **最新版 amis 特性**（如新组件、新 API）
+- 本 Skill 内置文档中的示例与用户需求 **存在版本差异**
+- 用户提到的组件或属性 **不在本 Skill 已知范围内**
+- 用户明确要求 **查看官方最新文档**
+
+### 降级策略
+
+当 Context7 服务不可用时，回退到本 Skill 内置的 `references/` 目录下的文档。内置文档基于 amis 6.13.0，覆盖常用场景，但可能不包含最新特性。
+
+### 配置说明
+
+本 Skill 根目录的 `.mcp.json` 已配置 Context7 MCP Server，兼容以下客户端：
+- **Cursor**：Settings → MCP → 自动加载项目 `.mcp.json`
+- **Claude Desktop**：将 `.mcp.json` 内容复制到 Claude Desktop 配置文件
+- **Windsurf / Cline**：同样支持项目级 `.mcp.json`
+
+如需手动配置，参考 `.mcp.json` 文件内容。
+
+---
+
 ## 常见问题
 
 **Q: 为什么 demo 打不开？**

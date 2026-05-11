@@ -4,12 +4,13 @@
 
 **百度Amis低代码框架的Agent技能包 — JSON驱动页面生成**
 
-覆盖100+组件 · 3个可运行Demo · 完整组件指南 · API对接方案
+覆盖100+组件 · 3个可运行Demo · 完整组件指南 · Context7实时文档 · API对接方案
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Amis](https://img.shields.io/badge/Amis-6.13.0-brightgreen.svg)
 ![Demo](https://img.shields.io/badge/Demo-3个可运行示例-orange.svg)
 [![npx compatible](https://img.shields.io/badge/npx-skills--compatible-green)](https://skills.sh/)
+[![Context7 MCP](https://img.shields.io/badge/Context7-MCP_Integrated-purple)](https://context7.com/)
 
 </div>
 
@@ -54,6 +55,7 @@ git clone https://github.com/ymstar/Amis.skill.git ~/.claude/skills/amis-skill
 - 🔧 **Schema验证** — Python脚本自动检查JSON配置
 - 🔗 **API对接** — 后端数据交互完整方案
 - ⚡ **npx兼容** — 一条命令安装到所有AI编程助手
+- 🔮 **Context7集成** — MCP协议实时拉取amis最新文档，告别过时API
 
 ---
 
@@ -113,9 +115,33 @@ Amis.skill/
 
 ---
 
+## 🔮 Context7 集成
+
+本 Skill 集成了 [Context7](https://context7.com/) MCP 服务，AI 可以在生成页面时实时拉取 amis 最新官方文档。
+
+### 工作方式
+
+1. AI 调用 `resolve-library-id(libraryName="amis")` 获取库 ID
+2. 调用 `get-library-docs(context7CompatibleLibraryID, topic="...", tokens=8000)` 获取最新文档
+3. 基于最新文档生成 Schema，确保 API 不过时
+
+### 支持的客户端
+
+`.mcp.json` 配置文件位于项目根目录，以下客户端自动加载：
+
+| 客户端 | 配置方式 |
+|--------|----------|
+| Cursor | 自动加载项目 `.mcp.json` |
+| Claude Desktop | 复制到 Claude 配置文件 |
+| Windsurf / Cline | 自动加载项目 `.mcp.json` |
+| Claude Code | 通过 npx skills 安装后自动识别 |
+
+---
+
 ## 🔗 相关链接
 
 - **Amis官方文档**：https://aisuda.bce.baidu.com/amis/zh-CN/docs/index
+- **Context7**：https://context7.com/
 - **Skills CLI**：https://github.com/vercel-labs/skills
 - **技能市场**：https://skills.sh/
 

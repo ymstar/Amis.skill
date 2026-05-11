@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "description": "Context7 MCP Server - 实时拉取 amis 等开源库的最新文档，避免 AI 生成过时代码"
+    }
+  }
+}
